@@ -951,7 +951,7 @@ function loadTrack(index, playImmediately = true) {
   
   DOM.playerTrackTitle.textContent = track.title;
   DOM.playerTrackArtist.textContent = track.artist;
-  DOM.playerAlbumArt.src = track.art || 'assets/daily_cover.png';
+  DOM.playerAlbumArt.src = track.art || 'assets/daily_cover.webp';
   
   // Reset progress elements
   gsap.set(DOM.playerProgressFill, { width: '0%' });
@@ -1032,7 +1032,7 @@ async function searchTracks(query, loadFirst = false) {
     
     const tracks = results.map(item => {
       const trackId = item.id || item.track_id;
-      let art = 'assets/daily_cover.png';
+      let art = 'assets/daily_cover.webp';
       if (item.artwork) {
         art = item.artwork['480x480'] || item.artwork['150x150'] || item.artwork['1000x1000'] || art;
       }
@@ -1083,7 +1083,7 @@ async function searchTracksFallbackITunes(searchQuery, loadFirst = false) {
     const results = data.results || [];
     
     const tracks = results.map(item => {
-      const art = item.artworkUrl100 ? item.artworkUrl100.replace('100x100bb', '300x300bb') : 'assets/daily_cover.png';
+      const art = item.artworkUrl100 ? item.artworkUrl100.replace('100x100bb', '300x300bb') : 'assets/daily_cover.webp';
       return {
         id: `track-${item.trackId || Date.now()}-${Math.random()}`,
         title: item.trackName || "Unknown Track",
