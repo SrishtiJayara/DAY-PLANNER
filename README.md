@@ -1,5 +1,7 @@
 # 🌌  Life Planner
 
+🔗 **Live Link:** [https://srishtijayara.github.io/DAY-PLANNER/](https://srishtijayara.github.io/DAY-PLANNER/)
+
 An elegant, premium glassmorphic productivity dashboard designed to organize your daily schedule, track habits, plan meals, manage shopping lists, and listen to focus music in one private place.
 
 ---
