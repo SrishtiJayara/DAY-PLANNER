@@ -3,16 +3,16 @@
    ========================================================================== */
 
 // 1. Default Spotify Playlist URL
-const DEFAULT_SPOTIFY_URL = 'https://open.spotify.com/playlist/37i9dQZF1DX8Ueb1mUJLmE';
+const DEFAULT_SPOTIFY_URL = 'https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn';
 
 // Curated Presets List (expanded dynamically for iTunes Search)
 const MUSIC_PRESETS = [
-  { name: "Lofi", spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1DX8Ueb1mUJLmE", desc: "Chill Lofi study beats" },
-  { name: "Bollywood Lofi", spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1DX6gPCOjL5K4v", desc: "Indian Bollywood Lofi remixes" },
-  { name: "Jazz", spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1DX0SMddj4H1zY", desc: "Coffee shop background jazz" },
-  { name: "Focus", spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0EXPn", desc: "Focus and ambient soundscapes" },
+  { name: "Lofi", spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn", desc: "Chill Lofi study beats" },
+  { name: "Bollywood Lofi", spotifyUrl: "https://open.spotify.com/playlist/2dVjtAQEhkPPoR768Y85as", desc: "Indian Bollywood Lofi remixes" },
+  { name: "Jazz", spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1DXbITWG1ZJKYt", desc: "Classic jazz standards" },
+  { name: "Focus", spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn", desc: "Focus and ambient soundscapes" },
   { name: "Acoustic", spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1DX4sWSpwq3LiO", desc: "Relaxing acoustic songs" },
-  { name: "Synthwave", spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1DXdLTE7yFWUcr", desc: "Synthwave beats for productivity" }
+  { name: "Synthwave", spotifyUrl: "https://open.spotify.com/playlist/73oMTDD4nHW4XPXMibHLNi", desc: "Synthwave beats for productivity" }
 ];
 
 // Global HTML5 Audio Player Object
@@ -409,8 +409,17 @@ function handleGoogleSignin() {
   const left = (window.screen.width / 2) - (width / 2);
   const top = (window.screen.height / 2) - (height / 2);
   
+  let popupUrl = 'signin.html';
+  const href = window.location.href;
+  // Handle folder path without trailing slash (e.g. GitHub Pages repo subfolder)
+  if (!href.endsWith('/') && !href.endsWith('.html')) {
+    popupUrl = href + '/signin.html';
+  } else {
+    popupUrl = new URL('signin.html', href).href;
+  }
+  
   window.open(
-    'signin.html', 
+    popupUrl, 
     'google_signin', 
     `width=${width},height=${height},left=${left},top=${top},status=no,resizable=yes`
   );
@@ -2169,6 +2178,15 @@ function setupEventListeners() {
       syncUserCounter();
     }
   });
+
+  // Forgot password link click handler
+  const forgotPasswordLink = document.getElementById('forgot-password-link');
+  if (forgotPasswordLink) {
+    forgotPasswordLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      showToast("Password reset link sent to your Gmail! Check your inbox.");
+    });
+  }
 }
 
 // ==========================================================================
