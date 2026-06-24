@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Life Planner — Organize Your Life</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="An elegant, full-width Notion-style life planner with task lists, calendar synchronizations, habit tracking, meal planning, financial sheets, and an ambient lo-fi music player.">
+  <meta name="keywords" content="life planner, todo, calendar, habit tracker, budget planner, productivity board">
+  <!-- Fonts (Outfit for UI, Playfair Display for Serif Headers, Plus Jakarta Sans for lists) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles.css">
+  <!-- GSAP Animation Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+
+  <!-- Ambient glowing decorations -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+
+  <div id="planner-wrapper">
+    <!-- 1. Hero Banner Header Section -->
+    <header class="hero-banner" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(15,15,15,0.95)), url('assets/life_planner_banner.jpg');">
+      <div class="hero-content">
+        <h1 id="hero-title" class="hero-title">Organize your Life.</h1>
+        <p id="hero-subtitle" class="hero-subtitle" style="font-size: 1.1rem; color: rgba(255,255,255,0.85); margin-top: 10px; max-width: 650px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); font-weight: 500;"></p>
+      </div>
+      <div id="visitor-counter-container" class="banner-visitor-counter" title="People using this planner to stay productive.">
+        <span style="margin-right: 4px;">👥</span>
+        <span id="visitor-counter" class="nav-counter-val">0</span>&nbsp;
+        <span class="nav-counter-lbl">Users Joined</span>
+      </div>
+      <button id="theme-toggle" class="banner-theme-toggle" title="Toggle Theme" aria-label="Toggle theme">
+        <!-- Sun Icon -->
+        <svg class="sun-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <!-- Moon Icon -->
+        <svg class="moon-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+      <button id="profile-btn" class="banner-profile-btn" title="Sign Out" aria-label="Sign out">
+        <!-- Log Out Icon -->
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+      </button>
+    </header>
+
+    <!-- 2. Board Title Header -->
+    <section class="board-header">
+      <div class="header-indicator"></div>
+      <h2 id="board-title" class="board-title">Life Planner</h2>
+      <p class="board-subtitle">All your thoughts in one private place.</p>
+    </section>
+
+    <!-- 3. Category Cover Cards Navigation -->
+    <section class="category-cards-grid">
+      <!-- Card 1: Daily -->
+      <div class="category-card" data-category="daily">
+        <div class="card-cover" style="background-image: url('assets/daily_cover.png');">
+          <span class="card-title">Daily</span>
+        </div>
+        <div class="card-links">
+          <div class="card-link-row">
+            <button class="card-link-btn" data-target="all"><span class="bullet">▪</span> Planner</button>
+            <button class="card-link-add-btn" data-target="all" title="Quick Add Task">
+              <svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="card-link-row">
+            <button class="card-link-btn" data-target="habits"><span class="bullet">▪</span> Habits</button>
+            <button class="card-link-add-btn" data-target="habits" title="Quick Add Habit">
+              <svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="card-link-row">
+            <button class="card-link-btn" data-target="journal"><span class="bullet">▪</span> Journal</button>
+            <button class="card-link-add-btn" data-target="journal" title="Quick Add Journal Entry">
+              <svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Planners -->
+      <div class="category-card" data-category="planners">
+        <div class="card-cover" style="background-image: url('assets/planners_cover.png');">
+          <span class="card-title">Planners</span>
+        </div>
+        <div class="card-links">
+          <div class="card-link-row">
+            <button class="card-link-btn" data-target="meals"><span class="bullet">▪</span> Meal Planner</button>
+            <button class="card-link-add-btn" data-target="meals" title="Quick Add Meal">
+              <svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="card-link-row">
+            <button class="card-link-btn" data-target="travel"><span class="bullet">▪</span> Travel Planner</button>
+            <button class="card-link-add-btn" data-target="travel" title="Quick Add Travel Task">
+              <svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="card-link-row">
+            <button class="card-link-btn" data-target="workout"><span class="bullet">▪</span> Workout Planner</button>
+            <button class="card-link-add-btn" data-target="workout" title="Quick Add Workout Task">
+              <svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Personal -->
+      <div class="category-card" data-category="personal">
+        <div class="card-cover" style="background-image: url('assets/personal_cover.png');">
+          <span class="card-title">Personal</span>
+        </div>
+        <div class="card-links">
+          <div class="card-link-row">
+            <button class="card-link-btn" data-target="books"><span class="bullet">▪</span> Bookshelf</button>
+            <button class="card-link-add-btn" data-target="books" title="Quick Add Book Task">
+              <svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="card-link-row">
+            <button class="card-link-btn" data-target="movies"><span class="bullet">▪</span> Movies & Series</button>
+            <button class="card-link-add-btn" data-target="movies" title="Quick Add Movie Task">
+              <svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Goals -->
+      <div class="category-card" data-category="goals">
+        <div class="card-cover" style="background-image: url('assets/goals_cover.png');">
+          <span class="card-title">Goals</span>
+        </div>
+        <div class="card-links">
+          <div class="card-link-row">
+            <button class="card-link-btn" data-target="goals"><span class="bullet">▪</span> Goals</button>
+            <button class="card-link-add-btn" data-target="goals" title="Quick Add Goal Task">
+              <svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="card-link-row">
+            <button class="card-link-btn" data-target="vision"><span class="bullet">▪</span> Vision</button>
+            <button class="card-link-add-btn" data-target="vision" title="Quick Add Vision Task">
+              <svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+          <div class="card-link-row">
+            <button class="card-link-btn" data-target="health"><span class="bullet">▪</span> Health</button>
+            <button class="card-link-add-btn" data-target="health" title="Quick Add Health Task">
+              <svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Split Section: Overview (Tasks table) & Spotify Player -->
+    <section class="split-layout overview-spotify-row">
+      <!-- Left side: Task Table Overview -->
+      <div class="widget-panel overview-widget">
+        <h3 class="panel-section-title">
+          — Overview
+          <button id="overview-add-shortcut-btn" class="title-add-btn" title="Add New Task">
+            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+        </h3>
+        <div class="overview-header-row">
+          <!-- Table tabs -->
+          <div class="overview-tabs">
+            <button class="tab-btn active" data-filter="all">Todos</button>
+            <button class="tab-btn" data-filter="journal">Journal</button>
+            <button class="tab-btn" data-filter="habits">Habits</button>
+            <button class="tab-btn" data-filter="workout">Workout</button>
+            <button class="tab-btn" data-filter="meal">Meal</button>
+            <button class="tab-btn" data-filter="medications">Medications</button>
+            <button class="tab-btn" data-filter="income">Income</button>
+          </div>
+          <!-- Sorting / Controls -->
+          <div class="overview-controls">
+            <input type="text" id="search-input" placeholder="Search tasks..." autocomplete="off">
+            <select id="sort-select">
+              <option value="createdAt">Created</option>
+              <option value="dueDate">Due Date</option>
+              <option value="priority">Priority</option>
+              <option value="title">A-Z</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Notion-style Task Table Grid -->
+        <div class="task-table-wrapper">
+          <table class="task-table">
+            <thead>
+              <tr>
+                <th class="col-check"><input type="checkbox" id="select-all-tasks" aria-label="Select all tasks"></th>
+                <th class="col-name">Name</th>
+                <th class="col-category">Category</th>
+                <th class="col-date">Due Date</th>
+                <th class="col-priority">Priority</th>
+                <th class="col-actions"></th>
+              </tr>
+            </thead>
+            <tbody id="todos-table-body">
+              <!-- Dynamically rendered -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Add Task inline bar -->
+        <div class="table-add-row">
+          <input type="text" id="inline-add-input" placeholder="+ New to-do entry..." autocomplete="off">
+          <div class="inline-selectors">
+            <select id="inline-category-select">
+              <option value="inbox">Inbox</option>
+              <option value="work">Work</option>
+              <option value="personal">Personal</option>
+              <option value="shopping">Shopping</option>
+              <option value="health">Health</option>
+            </select>
+            <select id="inline-priority-select">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+            <input type="date" id="inline-date-picker">
+            <input type="time" id="inline-time-picker" title="Reminder Time" style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 10px; border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 0.8rem; font-weight: 600; outline: none; transition: all 0.25s ease-out;">
+          </div>
+          <button id="inline-add-btn" class="btn-minimal-text" title="Add Task">Add</button>
+        </div>
+      </div>
+
+      <!-- Right side: Premium Music Player Widget -->
+      <div class="widget-panel music-widget">
+        <h3 class="panel-section-title">— Play Now</h3>
+        
+        <!-- Custom HTML5 Audio Player Card -->
+        <div id="music-player-card" class="music-player-card">
+          <!-- Album Art & Vinyl container -->
+          <div class="album-art-container">
+            <img id="player-album-art" src="assets/daily_cover.png" alt="Album Art" class="album-art" loading="lazy">
+            <div id="vinyl-record" class="vinyl-record"></div>
+          </div>
+          
+          <!-- Track Info Row -->
+          <div class="track-info-row">
+            <div class="track-info">
+              <div id="player-track-title" class="track-title">Select or Search Music</div>
+              <div id="player-track-artist" class="track-artist">Ambient Player</div>
+            </div>
+            <button id="player-fav-btn" class="icon-btn-small fav-btn" title="Add to Library" disabled>
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="progress-container">
+            <span id="player-time-current" class="time-label">0:00</span>
+            <div id="player-progress-bar-bg" class="progress-bar-bg">
+              <div id="player-progress-fill" class="progress-fill"></div>
+            </div>
+            <span id="player-time-total" class="time-label">0:00</span>
+          </div>
+
+          <!-- Controls -->
+          <div class="player-buttons-row">
+            <button id="player-prev-btn" class="icon-btn-small" title="Previous Track" disabled>
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                <line x1="5" y1="19" x2="5" y2="5"></line>
+              </svg>
+            </button>
+            <button id="player-play-btn" class="play-pause-btn" title="Play / Pause" disabled>
+              <!-- Play Icon -->
+              <svg id="play-svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <!-- Pause Icon -->
+              <svg id="pause-svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+              <!-- Spinner Icon -->
+              <svg id="spinner-svg" class="spinner-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.5" fill="none" style="display:none;"><circle cx="12" cy="12" r="10"></circle></svg>
+            </button>
+            <button id="player-next-btn" class="icon-btn-small" title="Next Track" disabled>
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                <line x1="19" y1="5" x2="19" y2="19"></line>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Volume Controls -->
+          <div class="volume-container">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            <input type="range" id="player-volume-slider" min="0" max="100" value="80" class="volume-slider">
+          </div>
+        </div>
+
+        <!-- Spotify Iframe Wrapper (shown only when a Spotify link is loaded) -->
+        <div id="spotify-iframe-wrapper" class="spotify-iframe-container" style="display:none;">
+          <!-- Dynamically populated Spotify Player Iframe -->
+        </div>
+
+        <!-- Search Section -->
+        <div class="music-search-section">
+          <span class="spotify-label-small">Search Music</span>
+          <div class="search-input-wrapper">
+            <input type="text" id="music-search-input" placeholder="Enter song, artist, genre..." autocomplete="off">
+            <div id="search-spinner" class="search-spinner" style="display:none;">
+              <svg class="spinner-icon-sm" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><circle cx="12" cy="12" r="10"></circle></svg>
+            </div>
+          </div>
+
+          <!-- Suggestions panel -->
+          <div id="search-suggestions" class="search-suggestions" style="display:none;">
+            <div id="spotify-search-shortcut-group" class="suggestion-group" style="display:none; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+              <button id="spotify-search-shortcut-btn" class="btn-minimal-text" style="width: 100%; justify-content: flex-start; text-transform: none; font-size: 0.8rem; height: auto; padding: 6px 12px;">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                Search "<span id="spotify-search-query-text"></span>" on Spotify ↗
+              </button>
+            </div>
+            <div id="recent-searches-group" class="suggestion-group" style="display:none;">
+              <span class="suggestion-header">Recent Searches</span>
+              <div id="recent-searches-list" class="suggestion-tags"></div>
+            </div>
+            <div class="suggestion-group">
+              <span class="suggestion-header">Popular Suggestions</span>
+              <div class="suggestion-tags">
+                <button class="suggestion-tag">Bollywood Lofi</button>
+                <button class="suggestion-tag">Indian Chill</button>
+                <button class="suggestion-tag">Study Music</button>
+                <button class="suggestion-tag">Coding Playlist</button>
+                <button class="suggestion-tag">Relaxing Music</button>
+                <button class="suggestion-tag">Lofi Beats</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Search Results List -->
+          <div id="search-results-container" class="search-results-container" style="display:none;">
+            <ul id="search-results-list" class="search-results-list">
+              <!-- Dynamically populated search items -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- Preset Music Genres Selector -->
+        <div class="spotify-presets-row">
+          <span class="spotify-label-small">Presets:</span>
+          <div id="spotify-presets-container" class="spotify-presets-container">
+            <!-- Dynamically populated from JS -->
+          </div>
+        </div>
+
+        <!-- User saved library / favorites -->
+        <div class="spotify-library-section">
+          <span class="spotify-label-small">My Saved Music:</span>
+          <ul id="spotify-favs-list" class="spotify-favs-list">
+            <!-- Dynamically populated user favorites -->
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Split Section: Calendar Grid & Upcoming Schedule -->
+    <section class="split-layout calendar-upcoming-row">
+      <!-- Left side: Notion-style Month Grid -->
+      <div class="widget-panel calendar-widget">
+        <h3 class="panel-section-title">— Calendar</h3>
+        <div class="calendar-controls-row">
+          <h4 id="calendar-month-year">January 2024</h4>
+          <div class="calendar-nav-buttons">
+            <button id="cal-prev-btn" class="icon-btn-small" title="Previous Month" aria-label="Previous Month">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <button id="cal-today-btn" class="cal-today-btn-minimal" title="Today">Today</button>
+            <button id="cal-next-btn" class="icon-btn-small" title="Next Month" aria-label="Next Month">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Calendar Month Grid -->
+        <div class="calendar-grid-container">
+          <div class="calendar-weekdays">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+          <div class="calendar-days" id="calendar-days-grid">
+            <!-- Dynamically populated dates -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right side: Upcoming Timelines -->
+      <div class="widget-panel upcoming-widget">
+        <h3 class="panel-section-title">— Upcoming</h3>
+        <div class="upcoming-scroller">
+          <div class="upcoming-group">
+            <div class="upcoming-group-title">
+              <span>Today</span>
+              <button class="upcoming-add-btn" data-days="0" title="Add task for Today">
+                <svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+            </div>
+            <div class="upcoming-items-list" id="upcoming-today-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <div class="upcoming-group">
+            <div class="upcoming-group-title">
+              <span>Tomorrow</span>
+              <button class="upcoming-add-btn" data-days="1" title="Add task for Tomorrow">
+                <svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+            </div>
+            <div class="upcoming-items-list" id="upcoming-tomorrow-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <div class="upcoming-group">
+            <div class="upcoming-group-title">
+              <span>Next 7 Days</span>
+              <button class="upcoming-add-btn" data-days="7" title="Add task for Next 7 Days">
+                <svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+            </div>
+            <div class="upcoming-items-list" id="upcoming-week-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Bottom Widgets: Habit Tracker, Meal Planner, Shopping List, Finance -->
+    <section class="bottom-trackers-grid">
+      <!-- Widget 1: Habit Tracker -->
+      <div class="widget-panel habits-panel">
+        <h3 class="panel-section-title">— Habit Tracker</h3>
+        <div class="tracker-header">
+          <span class="subtitle">Daily Completion</span>
+          <span id="habits-progress-pct" class="ratio-badge">0%</span>
+        </div>
+        <div class="progress-bar-bg mb-4">
+          <div id="habits-progress-fill" class="progress-bar-fill" style="width: 0%"></div>
+        </div>
+        
+        <ul class="checklist-items" id="habits-checklist">
+          <!-- Dynamically populated habits -->
+        </ul>
+        <div class="tracker-add-row">
+          <input type="text" id="add-habit-input" placeholder="New habit..." autocomplete="off">
+          <button id="add-habit-btn" class="btn-minimal-text" title="Add Habit">Add</button>
+        </div>
+      </div>
+
+      <!-- Widget 2: Meal Planner -->
+      <div class="widget-panel meals-panel">
+        <h3 class="panel-section-title">— Meal Planner</h3>
+        <div class="meal-group">
+          <span class="meal-label">Snack</span>
+          <input type="text" class="meal-input" id="meal-snack-input" placeholder="Set snack meal..." autocomplete="off">
+        </div>
+        <div class="meal-group">
+          <span class="meal-label">Breakfast</span>
+          <input type="text" class="meal-input" id="meal-breakfast-input" placeholder="Set breakfast meal..." autocomplete="off">
+        </div>
+        <div class="meal-group">
+          <span class="meal-label">Lunch</span>
+          <input type="text" class="meal-input" id="meal-lunch-input" placeholder="Set lunch meal..." autocomplete="off">
+        </div>
+      </div>
+
+      <!-- Widget 3: Shopping List -->
+      <div class="widget-panel shopping-panel">
+        <h3 class="panel-section-title">— Shopping List</h3>
+        <ul class="checklist-items" id="shopping-checklist">
+          <!-- Dynamically populated shopping list -->
+        </ul>
+        <div class="tracker-add-row">
+          <input type="text" id="add-shopping-input" placeholder="Add grocery item..." autocomplete="off">
+          <button id="add-shopping-btn" class="btn-minimal-text" title="Add Item">Add</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Settings & Backup -->
+    <footer class="planner-footer">
+      <div class="footer-left">
+      </div>
+      <div class="footer-actions">
+        <button id="clear-all-btn" class="btn btn-danger btn-sm">Reset Dashboard</button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Slide-out Details/Editing Panel (Triggered by clicking row names) -->
+  <div id="details-overlay" class="panel-overlay"></div>
+  <aside id="details-panel" class="glass-panel">
+    <div class="panel-header">
+      <h2>Edit Planner Item</h2>
+      <button id="close-details-btn" class="icon-btn" title="Close Panel" aria-label="Close details">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="panel-body">
+      <!-- Editable Title -->
+      <div class="form-group">
+        <label for="detail-title-input" class="form-label">Task Name</label>
+        <input type="text" id="detail-title-input" class="form-control title-input" placeholder="Task Title">
+      </div>
+
+      <!-- Editable Description -->
+      <div class="form-group">
+        <label for="detail-desc-input" class="form-label">Description / Notes</label>
+        <textarea id="detail-desc-input" class="form-control desc-input" rows="4" placeholder="Enter notes or task description..."></textarea>
+      </div>
+
+      <!-- Metadata Row (Priority, List, Due Date) -->
+      <div class="detail-grid">
+        <div class="form-group">
+          <label for="detail-priority-select" class="form-label">Priority</label>
+          <select id="detail-priority-select" class="form-control">
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="detail-category-select" class="form-label">Category List</label>
+          <select id="detail-category-select" class="form-control">
+            <option value="inbox">Inbox</option>
+            <option value="work">Work</option>
+            <option value="personal">Personal</option>
+            <option value="shopping">Shopping</option>
+            <option value="health">Health</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="detail-date-picker" class="form-label">Due Date</label>
+          <input type="date" id="detail-date-picker" class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="detail-time-picker" class="form-label">Reminder Time</label>
+          <input type="time" id="detail-time-picker" class="form-control">
+        </div>
+      </div>
+
+      <!-- Subtasks Section -->
+      <div class="panel-section subtasks-section">
+        <div class="section-title-row">
+          <h3>Subtasks Checklist</h3>
+          <span id="subtasks-ratio" class="ratio-badge">0 / 0</span>
+        </div>
+
+        <div class="subtask-progress">
+          <div class="progress-bar-bg">
+            <div id="subtask-progress-fill" class="progress-bar-fill" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <ul id="subtasks-list" class="subtask-checklist">
+          <!-- Dynamic checklist -->
+        </ul>
+
+        <div class="add-subtask-row">
+          <input type="text" id="new-subtask-input" class="form-control" placeholder="Add a subtask..." autocomplete="off">
+          <button id="add-subtask-btn" class="btn-minimal-text" title="Add Subtask">Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-footer">
+      <button id="delete-task-btn" class="btn btn-danger btn-icon w-full">Delete Task</button>
+    </div>
+  </aside>
+
+  <!-- Modal Box: Confirmation Dialog -->
+  <div id="confirm-modal" class="modal-overlay">
+    <div class="modal-card glass-panel modal-confirm">
+      <div class="modal-body text-center">
+        <div class="alert-icon-wrapper">
+          <svg viewBox="0 0 24 24" width="48" height="48" stroke="var(--danger)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </div>
+        <h3>Are you sure?</h3>
+        <p id="confirm-modal-text">This will reset all your planner databases. You cannot undo this action.</p>
+      </div>
+      <div class="modal-footer">
+        <button id="cancel-confirm-btn" class="btn btn-secondary">Cancel</button>
+        <button id="confirm-action-btn" class="btn btn-danger">Yes, Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sign In Modal -->
+  <div id="signin-modal" class="modal-overlay">
+    <div class="modal-card glass-panel modal-signin text-center">
+      <div class="alert-icon-wrapper" style="background: rgba(56, 189, 248, 0.1);">
+        <svg viewBox="0 0 24 24" width="36" height="36" stroke="var(--accent-warm)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <h3 style="font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 8px;">Welcome to Life Planner</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Enter your Gmail to personalize your workspace.</p>
+      
+      <!-- Counter Badge -->
+      <div id="signin-counter-container" style="font-size: 0.75rem; color: var(--accent-warm); font-weight: 700; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px;">
+        <span id="signin-counter">0</span> active users
+      </div>
+
+      <div style="text-align: left; margin-bottom: 20px;">
+        <label for="signin-email-input" class="form-label" style="display: block; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.5px;">Your Gmail</label>
+        <input type="email" id="signin-email-input" class="form-control" placeholder="e.g. aditya@gmail.com" style="width: 100%;" required autocomplete="off">
+      </div>
+      
+      <!-- Google Sign In Button -->
+      <div style="margin-bottom: 16px;">
+        <button id="google-signin-btn" class="google-btn" style="width: 100%; height: 42px; display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: #ffffff; color: #1f1f1f; font-family: var(--font-body); font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all var(--transition-smooth);">
+          <svg width="18" height="18" viewBox="0 0 24 24" style="display: block;">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          Sign in with Google
+        </button>
+      </div>
+
+      <div style="font-size: 0.72rem; color: var(--text-muted); margin: 8px 0 16px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <span style="height: 1px; background: var(--border-color); flex-grow: 1;"></span>
+        <span>or use local Gmail</span>
+        <span style="height: 1px; background: var(--border-color); flex-grow: 1;"></span>
+      </div>
+      
+      <div class="modal-footer" style="justify-content: center; margin-top: 16px; padding: 0;">
+        <button id="signin-btn" class="btn-minimal-text" style="width: 100%; height: 38px;">Sign In</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="glass-panel">
+    <span id="toast-message">Task updated!</span>
+  </div>
+
+  <!-- JavaScript logic -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
