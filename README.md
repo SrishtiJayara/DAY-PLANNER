@@ -1,4 +1,4 @@
-# 🌌 Aero Life Planner
+# 🌌  Life Planner
 
 An elegant, premium glassmorphic productivity dashboard designed to organize your daily schedule, track habits, plan meals, manage shopping lists, and listen to focus music in one private place.
 
@@ -40,32 +40,3 @@ An elegant, premium glassmorphic productivity dashboard designed to organize you
 
 ---
 
-## 🚀 How to Run Locally
-
-### 1. Install Dependencies
-Ensure you have [Node.js](https://nodejs.org/) installed. Run the following command in the project root to install Vite:
-```bash
-npm install
-```
-
-### 2. Start Dev Server
-Spin up the local developer server:
-```bash
-npm run dev
-```
-Open the local server URL (usually `http://localhost:5173`) in your web browser.
-
----
-
-## 📦 Building for Production
-
-To bundle, compile, and minify the assets into clean production-ready files:
-```bash
-npm run build
-```
-The output files will be compiled into the `dist/` directory, ready to be hosted on platforms like GitHub Pages, Vercel, or Netlify.
-
----
-
-## 🔒 License
-This project is fully protected under copyright. See the [LICENSE](LICENSE) file for usage terms.
