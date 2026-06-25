@@ -202,7 +202,11 @@ const DOM = {
   heroTitle: document.getElementById('hero-title'),
   boardTitle: document.getElementById('board-title'),
   inlineTimePicker: document.getElementById('inline-time-picker'),
-  detailTimePicker: document.getElementById('detail-time-picker')
+  detailTimePicker: document.getElementById('detail-time-picker'),
+  reminderModal: document.getElementById('reminder-modal'),
+  reminderTaskTitle: document.getElementById('reminder-task-title'),
+  reminderTaskDesc: document.getElementById('reminder-task-desc'),
+  closeReminderBtn: document.getElementById('close-reminder-btn')
 };
 
 let confirmationCallback = null;
@@ -217,6 +221,141 @@ function init() {
   renderApp();
   checkSignin();
   syncUserCounter();
+  updateInlineInputPlaceholder();
+  initNotificationSystem();
+}
+
+function updateInlineInputPlaceholder() {
+  const wrapper = document.getElementById('overview-add-wrapper');
+  if (!wrapper) return;
+
+  let html = '';
+
+  switch (state.activeFilter) {
+    case 'journal':
+      html = `
+        <input type="text" id="inline-add-input" placeholder="Journal Title..." autocomplete="off" style="flex-grow: 1; max-width: 30%; background: var(--bg-input) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 10px 14px; border-radius: var(--radius-sm); outline: none;">
+        <input type="text" id="inline-desc-input" placeholder="Write your diary entry notes here..." autocomplete="off" style="flex-grow: 2; background: var(--bg-input) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 10px 14px; border-radius: var(--radius-sm); outline: none;">
+        <div class="inline-selectors">
+          <input type="date" id="inline-date-picker">
+        </div>
+        <button id="inline-add-btn" class="btn-minimal-text" title="Save Journal Entry">Save</button>
+      `;
+      break;
+    case 'habits':
+      html = `
+        <input type="text" id="inline-add-input" placeholder="Habit Name (e.g. Read 10 pages)..." autocomplete="off" style="flex-grow: 2; background: var(--bg-input) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 10px 14px; border-radius: var(--radius-sm); outline: none;">
+        <div class="inline-selectors">
+          <select id="inline-freq-select" title="Frequency">
+            <option value="Daily">Daily</option>
+            <option value="Weekly">Weekly</option>
+          </select>
+        </div>
+        <button id="inline-add-btn" class="btn-minimal-text" title="Add Habit">Add</button>
+      `;
+      break;
+    case 'workout':
+      html = `
+        <input type="text" id="inline-add-input" placeholder="Exercise / Workout Name..." autocomplete="off" style="flex-grow: 1; max-width: 30%; background: var(--bg-input) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 10px 14px; border-radius: var(--radius-sm); outline: none;">
+        <input type="text" id="inline-desc-input" placeholder="Sets / Reps / Details..." autocomplete="off" style="flex-grow: 2; background: var(--bg-input) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 10px 14px; border-radius: var(--radius-sm); outline: none;">
+        <div class="inline-selectors">
+          <input type="date" id="inline-date-picker">
+        </div>
+        <button id="inline-add-btn" class="btn-minimal-text" title="Add Workout Log">Log</button>
+      `;
+      break;
+    case 'meal':
+      html = `
+        <input type="text" id="inline-add-input" placeholder="Meal Item (e.g. Oatmeal)..." autocomplete="off" style="flex-grow: 2; background: var(--bg-input) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 10px 14px; border-radius: var(--radius-sm); outline: none;">
+        <div class="inline-selectors">
+          <select id="inline-meal-type-select" title="Meal Type">
+            <option value="Breakfast">🍳 Breakfast</option>
+            <option value="Lunch">🍲 Lunch</option>
+            <option value="Snack">🍎 Snack</option>
+            <option value="Dinner">🥗 Dinner</option>
+          </select>
+          <input type="date" id="inline-date-picker">
+        </div>
+        <button id="inline-add-btn" class="btn-minimal-text" title="Add Meal Menu">Add</button>
+      `;
+      break;
+    case 'medications':
+      html = `
+        <input type="text" id="inline-add-input" placeholder="Medicine Name (e.g. Vitamin D)..." autocomplete="off" style="flex-grow: 1; max-width: 30%; background: var(--bg-input) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 10px 14px; border-radius: var(--radius-sm); outline: none;">
+        <input type="text" id="inline-med-dosage" placeholder="Dosage (e.g. 1 pill)..." autocomplete="off" style="flex-grow: 1; background: var(--bg-input) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 10px 14px; border-radius: var(--radius-sm); outline: none;">
+        <div class="inline-selectors">
+          <select id="inline-med-time" title="Scheduling">
+            <option value="Morning ☀️">Morning ☀️</option>
+            <option value="Afternoon 🌤️">Afternoon 🌤️</option>
+            <option value="Evening 🌙">Evening 🌙</option>
+            <option value="Twice Daily ⏰">Twice Daily ⏰</option>
+          </select>
+        </div>
+        <button id="inline-add-btn" class="btn-minimal-text" title="Add Medication">Add</button>
+      `;
+      break;
+    case 'income':
+      html = `
+        <input type="text" id="inline-add-input" placeholder="Transaction description (e.g. Salary)..." autocomplete="off" style="flex-grow: 2; background: var(--bg-input) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 10px 14px; border-radius: var(--radius-sm); outline: none;">
+        <input type="number" id="inline-fin-amount" placeholder="Amount ($)..." autocomplete="off" style="width: 100px; background: var(--bg-input) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 10px 14px; border-radius: var(--radius-sm); outline: none;">
+        <div class="inline-selectors">
+          <select id="inline-fin-type" title="Transaction Type">
+            <option value="income">Income (+)</option>
+            <option value="expense">Expense (-)</option>
+          </select>
+          <input type="date" id="inline-date-picker">
+        </div>
+        <button id="inline-add-btn" class="btn-minimal-text" title="Add Transaction">Log</button>
+      `;
+      break;
+    default:
+      html = `
+        <input type="text" id="inline-add-input" placeholder="+ New to-do entry..." autocomplete="off" style="background: var(--bg-input) !important; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; padding: 10px 14px; border-radius: var(--radius-sm); outline: none;">
+        <div class="inline-selectors">
+          <select id="inline-category-select">
+            <option value="inbox">Inbox</option>
+            <option value="work">Work</option>
+            <option value="personal">Personal</option>
+            <option value="shopping">Shopping</option>
+            <option value="health">Health</option>
+          </select>
+          <select id="inline-priority-select">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+          <input type="date" id="inline-date-picker">
+          <input type="time" id="inline-time-picker" title="Reminder Time" style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 10px; border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 0.8rem; font-weight: 600; outline: none; transition: all 0.25s ease-out;">
+        </div>
+        <button id="inline-add-btn" class="btn-minimal-text" title="Add Task">Add</button>
+      `;
+      break;
+  }
+
+  wrapper.innerHTML = html;
+
+  // Bind fresh event listeners to the newly rendered elements
+  const addBtn = document.getElementById('inline-add-btn');
+  const addInput = document.getElementById('inline-add-input');
+  
+  // Re-cache DOM elements for script context
+  DOM.inlineAddInput = addInput;
+  DOM.inlineAddBtn = addBtn;
+  DOM.inlineCategorySelect = document.getElementById('inline-category-select');
+  DOM.inlinePrioritySelect = document.getElementById('inline-priority-select');
+  DOM.inlineDatePicker = document.getElementById('inline-date-picker');
+  DOM.inlineTimePicker = document.getElementById('inline-time-picker');
+
+  if (addBtn) {
+    addBtn.addEventListener('click', createInlineTask);
+  }
+  if (addInput) {
+    addInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        createInlineTask();
+      }
+    });
+  }
 }
 
 function loadData() {
@@ -446,10 +585,8 @@ function renderApp() {
   saveData();
 }
 
-// 4a. Render Overview Todos Table
+// 4a. Render Overview Todos Table (Routed based on Active Category Filter)
 function renderTodosTable() {
-  DOM.todosTableBody.innerHTML = '';
-  
   // Filter Tasks
   let filtered = state.tasks.filter(t => {
     const matchesSearch = t.title.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
@@ -457,8 +594,6 @@ function renderTodosTable() {
     
     let matchesTab = true;
     if (state.activeFilter !== 'all') {
-      // Map tabs (journal, habits, workout, meal, medications, income)
-      // to task category list matches or tag queries
       matchesTab = t.category.toLowerCase() === state.activeFilter.toLowerCase() ||
                    t.title.toLowerCase().includes(state.activeFilter.toLowerCase());
     }
@@ -483,8 +618,67 @@ function renderTodosTable() {
     return 0;
   });
 
+  // Get the wrapper element
+  const wrapper = document.getElementById('overview-content-wrapper');
+  if (!wrapper) return;
+
+  // Render based on activeFilter
+  if (state.activeFilter === 'all') {
+    renderStandardTable(filtered, wrapper);
+  } else if (state.activeFilter === 'journal') {
+    renderJournalView(filtered, wrapper);
+  } else if (state.activeFilter === 'habits') {
+    renderHabitsView(filtered, wrapper);
+  } else if (state.activeFilter === 'workout') {
+    renderWorkoutView(filtered, wrapper);
+  } else if (state.activeFilter === 'meal') {
+    renderMealView(filtered, wrapper);
+  } else if (state.activeFilter === 'medications') {
+    renderMedicationsView(filtered, wrapper);
+  } else if (state.activeFilter === 'income') {
+    renderIncomeView(filtered, wrapper);
+  } else {
+    renderStandardTable(filtered, wrapper);
+  }
+}
+
+// Fallback Standard Table UI
+function renderStandardTable(filtered, wrapper) {
+  wrapper.innerHTML = `
+    <table class="task-table">
+      <thead>
+        <tr>
+          <th class="col-check"><input type="checkbox" id="select-all-tasks" aria-label="Select all tasks"></th>
+          <th class="col-name">Name</th>
+          <th class="col-category">Category</th>
+          <th class="col-date">Due Date</th>
+          <th class="col-priority">Priority</th>
+          <th class="col-actions"></th>
+        </tr>
+      </thead>
+      <tbody id="todos-table-body">
+        <!-- Dynamically rendered -->
+      </tbody>
+    </table>
+  `;
+
+  const tbody = document.getElementById('todos-table-body');
+  const selectAll = document.getElementById('select-all-tasks');
+
+  // Setup select all listener
+  if (selectAll) {
+    selectAll.checked = filtered.length > 0 && filtered.every(t => t.completed);
+    selectAll.addEventListener('change', (e) => {
+      const checked = e.target.checked;
+      filtered.forEach(t => {
+        t.completed = checked;
+      });
+      renderApp();
+    });
+  }
+
   if (filtered.length === 0) {
-    DOM.todosTableBody.innerHTML = `<tr><td colspan="6" class="text-center" style="color: var(--text-muted); padding: 24px;">No planner entries found in this list.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center" style="color: var(--text-muted); padding: 24px;">No planner entries found in this list.</td></tr>`;
     return;
   }
 
@@ -492,7 +686,6 @@ function renderTodosTable() {
     const tr = document.createElement('tr');
     tr.className = task.completed ? 'row-completed' : '';
 
-    // Date indicators
     let dateHTML = '—';
     let dateClass = '';
     if (task.dueDate) {
@@ -509,7 +702,6 @@ function renderTodosTable() {
       }
     }
 
-    // Colors mapping
     const categoryColors = {
       work: { bg: 'rgba(99,102,241,0.12)', fg: '#8b5cf6' },
       personal: { bg: 'rgba(236,72,153,0.12)', fg: '#ec4899' },
@@ -537,7 +729,6 @@ function renderTodosTable() {
       </td>
     `;
 
-    // Triggers
     tr.querySelector('.table-task-checkbox').addEventListener('change', () => {
       toggleTask(task.id);
     });
@@ -553,7 +744,374 @@ function renderTodosTable() {
       });
     });
 
-    DOM.todosTableBody.appendChild(tr);
+    tbody.appendChild(tr);
+  });
+}
+
+// 4a-1. Custom Journal Card Grid UI
+function renderJournalView(filtered, wrapper) {
+  wrapper.innerHTML = `
+    <div class="custom-layout-container">
+      <div class="journal-grid" id="journal-cards-container"></div>
+    </div>
+  `;
+
+  const container = document.getElementById('journal-cards-container');
+  if (filtered.length === 0) {
+    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 32px 0;">📓 Your journal list is empty. Click "+ New to-do entry" below to write down your thoughts!</div>`;
+    return;
+  }
+
+  filtered.forEach(entry => {
+    const card = document.createElement('div');
+    card.className = 'journal-card';
+
+    const dateStr = entry.dueDate ? new Date(entry.dueDate + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) : 'No Date Assigned';
+    const bodyPreview = entry.description || 'No entry details written. Click the title to edit.';
+
+    card.innerHTML = `
+      <div class="journal-card-header">
+        <span class="journal-card-date">✍️ ${dateStr}</span>
+      </div>
+      <div class="journal-card-title">${escapeHTML(entry.title)}</div>
+      <div class="journal-card-body">${escapeHTML(bodyPreview).replace(/\n/g, '<br>')}</div>
+      <div class="journal-card-footer">
+        <button class="icon-btn-small journal-delete-btn" title="Delete Entry" style="color: var(--danger);">
+          <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="1.5" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2 2v2"></path></svg>
+        </button>
+      </div>
+    `;
+
+    card.querySelector('.journal-card-title').addEventListener('click', () => {
+      openDetailsPanel(entry.id);
+    });
+
+    card.querySelector('.journal-delete-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      triggerConfirmModal('Delete this journal entry permanently?', () => {
+        deleteTask(entry.id);
+      });
+    });
+
+    container.appendChild(card);
+  });
+}
+
+// 4a-2. Custom Habits Streaks List UI
+function renderHabitsView(filtered, wrapper) {
+  wrapper.innerHTML = `
+    <div class="custom-layout-container">
+      <div class="habit-streaks-list" id="habit-streaks-container"></div>
+    </div>
+  `;
+
+  const container = document.getElementById('habit-streaks-container');
+  if (filtered.length === 0) {
+    container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 32px 0;">🔥 No daily habits found. Add your habits below to track your streaks!</div>`;
+    return;
+  }
+
+  filtered.forEach(habit => {
+    const card = document.createElement('div');
+    card.className = 'habit-streak-card';
+
+    const seed = habit.title.length;
+    const streak = seed % 6 + 1; 
+    const rate = Math.round((seed * 3) % 40 + 60); 
+
+    card.innerHTML = `
+      <div class="habit-streak-info">
+        <div class="habit-streak-name">${escapeHTML(habit.title)}</div>
+        <div class="habit-streak-stat">
+          <span class="habit-streak-badge">🔥 ${streak}d Streak</span>
+          <span>•</span>
+          <span>${rate}% This Month</span>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button class="habit-action-btn ${habit.completed ? 'completed' : ''}">
+          ${habit.completed ? '✓ Completed' : 'Mark Done'}
+        </button>
+        <button class="icon-btn-small habit-delete-btn" title="Delete Habit" style="color: var(--text-dim);">
+          <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="1.5" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2 2v2"></path></svg>
+        </button>
+      </div>
+    `;
+
+    card.querySelector('.habit-streak-name').addEventListener('click', () => {
+      openDetailsPanel(habit.id);
+    });
+
+    card.querySelector('.habit-action-btn').addEventListener('click', () => {
+      toggleTask(habit.id);
+    });
+
+    card.querySelector('.habit-delete-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      triggerConfirmModal('Delete this habit permanently?', () => {
+        deleteTask(habit.id);
+      });
+    });
+
+    container.appendChild(card);
+  });
+}
+
+// 4a-3. Custom Workout Log Grid UI
+function renderWorkoutView(filtered, wrapper) {
+  wrapper.innerHTML = `
+    <div class="custom-layout-container">
+      <div class="workout-log-grid" id="workout-log-container"></div>
+    </div>
+  `;
+
+  const container = document.getElementById('workout-log-container');
+  if (filtered.length === 0) {
+    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 32px 0;">💪 No workout logs found. Add your exercise schedule to stay active!</div>`;
+    return;
+  }
+
+  filtered.forEach(workout => {
+    const card = document.createElement('div');
+    card.className = 'workout-log-card';
+
+    const icons = ['🏋️‍♂️', '🏃‍♂️', '🚴‍♂️', '🧘‍♂️', '🏊‍♂️', '🤸‍♂️'];
+    const icon = icons[workout.title.length % icons.length];
+    const details = workout.description || 'No workout details or sets specified. Click title to edit.';
+
+    card.innerHTML = `
+      <div class="workout-log-header">
+        <span class="workout-log-icon">${icon}</span>
+        <div class="workout-log-title">${escapeHTML(workout.title)}</div>
+      </div>
+      <div class="workout-log-details">${escapeHTML(details).replace(/\n/g, '<br>')}</div>
+      <div class="workout-log-footer">
+        <span style="font-size: 0.72rem; font-weight: 700; color: var(--accent-warm); text-transform: uppercase;">
+          🎯 Priority: ${workout.priority}
+        </span>
+        <div style="display: flex; gap: 8px;">
+          <button class="habit-action-btn ${workout.completed ? 'completed' : ''}" style="padding: 4px 10px; font-size: 0.72rem;">
+            ${workout.completed ? 'Done ✓' : 'Complete'}
+          </button>
+          <button class="icon-btn-small workout-delete-btn" title="Delete Workout" style="color: var(--text-dim);">
+            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="1.5" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2 2v2"></path></svg>
+          </button>
+        </div>
+      </div>
+    `;
+
+    card.querySelector('.workout-log-title').addEventListener('click', () => {
+      openDetailsPanel(workout.id);
+    });
+
+    card.querySelector('.habit-action-btn').addEventListener('click', () => {
+      toggleTask(workout.id);
+    });
+
+    card.querySelector('.workout-delete-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      triggerConfirmModal('Delete this workout log?', () => {
+        deleteTask(workout.id);
+      });
+    });
+
+    container.appendChild(card);
+  });
+}
+
+// 4a-4. Custom Meal Planner Grid UI
+function renderMealView(filtered, wrapper) {
+  wrapper.innerHTML = `
+    <div class="custom-layout-container">
+      <div class="meal-board-grid" id="meal-board-container"></div>
+    </div>
+  `;
+
+  const container = document.getElementById('meal-board-container');
+  if (filtered.length === 0) {
+    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 32px 0;">🥗 No meal plans logged. Write down your food menu below!</div>`;
+    return;
+  }
+
+  filtered.forEach(meal => {
+    const card = document.createElement('div');
+    card.className = 'meal-board-card';
+
+    const types = ['🍳 Breakfast', '🍲 Lunch', '🍎 Snack', '🥗 Dinner'];
+    const type = types[meal.title.length % types.length];
+    const details = meal.description || 'No meal preparation details. Click title to add recipe.';
+
+    card.innerHTML = `
+      <span class="meal-board-type">${type}</span>
+      <div class="meal-board-title">${escapeHTML(meal.title)}</div>
+      <div class="meal-board-desc">${escapeHTML(details).replace(/\n/g, '<br>')}</div>
+      <div class="meal-board-footer">
+        <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">
+          📅 ${meal.dueDate ? meal.dueDate : 'Daily'}
+        </span>
+        <button class="icon-btn-small meal-delete-btn" title="Delete Meal" style="color: var(--text-dim);">
+          <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="1.5" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2 2v2"></path></svg>
+        </button>
+      </div>
+    `;
+
+    card.querySelector('.meal-board-title').addEventListener('click', () => {
+      openDetailsPanel(meal.id);
+    });
+
+    card.querySelector('.meal-delete-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      triggerConfirmModal('Delete this meal entry?', () => {
+        deleteTask(meal.id);
+      });
+    });
+
+    container.appendChild(card);
+  });
+}
+
+// 4a-5. Custom Medication Pillbox UI
+function renderMedicationsView(filtered, wrapper) {
+  wrapper.innerHTML = `
+    <div class="custom-layout-container">
+      <div class="medication-pillbox" id="medication-pillbox-container"></div>
+    </div>
+  `;
+
+  const container = document.getElementById('medication-pillbox-container');
+  if (filtered.length === 0) {
+    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 32px 0;">💊 No prescription medicines scheduled. Add your medications below!</div>`;
+    return;
+  }
+
+  filtered.forEach(med => {
+    const card = document.createElement('div');
+    card.className = 'medication-pill-card';
+
+    const seed = med.title.length;
+    const dosage = seed % 2 === 0 ? '1 tablet' : '2 capsules';
+    const schedule = seed % 3 === 0 ? 'Morning ☀️' : (seed % 3 === 1 ? 'Night 🌙' : 'Twice daily ⏰');
+
+    card.innerHTML = `
+      <div class="medication-pill-header">
+        <span class="medication-pill-icon">💊</span>
+        <div class="medication-pill-name">${escapeHTML(med.title)}</div>
+      </div>
+      <div class="medication-pill-meta">
+        <span class="medication-pill-badge dosage">${dosage}</span>
+        <span class="medication-pill-badge schedule">${schedule}</span>
+      </div>
+      <div class="medication-pill-footer">
+        <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">
+          Priority: ${med.priority.toUpperCase()}
+        </span>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button class="habit-action-btn ${med.completed ? 'completed' : ''}" style="padding: 4px 10px; font-size: 0.72rem;">
+            ${med.completed ? 'Taken ✓' : 'Mark Taken'}
+          </button>
+          <button class="icon-btn-small med-delete-btn" title="Delete Medication" style="color: var(--text-dim);">
+            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="1.5" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2 2v2"></path></svg>
+          </button>
+        </div>
+      </div>
+    `;
+
+    card.querySelector('.medication-pill-name').addEventListener('click', () => {
+      openDetailsPanel(med.id);
+    });
+
+    card.querySelector('.habit-action-btn').addEventListener('click', () => {
+      toggleTask(med.id);
+    });
+
+    card.querySelector('.med-delete-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      triggerConfirmModal('Delete this medication prescription?', () => {
+        deleteTask(med.id);
+      });
+    });
+
+    container.appendChild(card);
+  });
+}
+
+// 4a-6. Custom Income / Finance Ledger UI
+function renderIncomeView(filtered, wrapper) {
+  let incomeVal = 0;
+  let expenseVal = 0;
+
+  filtered.forEach(item => {
+    const amtMatch = item.title.match(/\$?(\d+)/);
+    const amt = amtMatch ? parseInt(amtMatch[1], 10) : 50;
+    
+    if (item.priority === 'high' || item.title.toLowerCase().includes('income') || item.title.toLowerCase().includes('earn')) {
+      incomeVal += amt;
+    } else {
+      expenseVal += amt;
+    }
+  });
+
+  const netVal = incomeVal - expenseVal;
+
+  wrapper.innerHTML = `
+    <div class="custom-layout-container">
+      <div class="finances-ledger">
+        <div class="finances-summary-row">
+          <div class="finances-summary-card">
+            <span class="finances-summary-lbl">Total Net</span>
+            <div class="finances-summary-val ${netVal >= 0 ? 'pos' : 'neg'}">$${netVal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          </div>
+          <div class="finances-summary-card">
+            <span class="finances-summary-lbl">Revenue</span>
+            <div class="finances-summary-val pos">$${incomeVal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          </div>
+          <div class="finances-summary-card">
+            <span class="finances-summary-lbl">Expenses</span>
+            <div class="finances-summary-val neg">$${expenseVal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          </div>
+        </div>
+        
+        <div class="finances-ledger-list" id="finances-ledger-container"></div>
+      </div>
+    </div>
+  `;
+
+  const container = document.getElementById('finances-ledger-container');
+  if (filtered.length === 0) {
+    container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 32px 0;">💰 No finance logs recorded. Track your earnings and budgets below!</div>`;
+    return;
+  }
+
+  filtered.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'finance-ledger-item';
+
+    const amtMatch = item.title.match(/\$?(\d+)/);
+    const amt = amtMatch ? parseInt(amtMatch[1], 10) : 50;
+    const isIncome = item.priority === 'high' || item.title.toLowerCase().includes('income') || item.title.toLowerCase().includes('earn');
+    const dateStr = item.dueDate ? new Date(item.dueDate + 'T00:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'Today';
+
+    div.innerHTML = `
+      <div class="finance-ledger-desc">${escapeHTML(item.title)}</div>
+      <div class="finance-ledger-date">${dateStr}</div>
+      <div class="finance-ledger-amt ${isIncome ? 'pos' : 'neg'}">${isIncome ? '+' : '-'}$${amt.toFixed(2)}</div>
+      <button class="icon-btn-small fin-delete-btn" title="Delete Ledger Entry" style="color: var(--text-dim); margin-left: 8px;">
+        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="1.5" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2 2v2"></path></svg>
+      </button>
+    `;
+
+    div.querySelector('.finance-ledger-desc').addEventListener('click', () => {
+      openDetailsPanel(item.id);
+    });
+
+    div.querySelector('.fin-delete-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      triggerConfirmModal('Delete this ledger record?', () => {
+        deleteTask(item.id);
+      });
+    });
+
+    container.appendChild(div);
   });
 }
 
@@ -1551,7 +2109,10 @@ function createInlineTask() {
   const title = DOM.inlineAddInput.value.trim();
   if (!title) return;
 
-  const category = DOM.inlineCategorySelect.value;
+  let category = DOM.inlineCategorySelect.value;
+  if (state.activeFilter !== 'all') {
+    category = state.activeFilter;
+  }
   const priority = DOM.inlinePrioritySelect.value;
   const dueDate = DOM.inlineDatePicker.value;
   const dueTime = DOM.inlineTimePicker ? DOM.inlineTimePicker.value : '';
@@ -1790,6 +2351,7 @@ function setupEventListeners() {
       DOM.tabBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state.activeFilter = btn.getAttribute('data-filter');
+      updateInlineInputPlaceholder();
       renderTodosTable();
     });
   });
@@ -1822,11 +2384,6 @@ function setupEventListeners() {
     renderApp();
   });
 
-  // Add Task handlers
-  DOM.inlineAddBtn.addEventListener('click', createInlineTask);
-  DOM.inlineAddInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') createInlineTask();
-  });
 
   // Custom Music Player Event Listeners
   DOM.playerPlayBtn.addEventListener('click', () => {
@@ -2222,6 +2779,124 @@ function escapeHTML(str) {
       '"': '&quot;'
     }[tag] || tag)
   );
+}
+
+// ==========================================================================
+// 12. Real-Time Task Reminders & Notifications
+// ==========================================================================
+let notifiedTasks = [];
+
+function initNotificationSystem() {
+  // Request desktop notification permissions
+  if ("Notification" in window && Notification.permission === "default") {
+    Notification.requestPermission();
+  }
+
+  // Load notified tasks history
+  try {
+    const stored = localStorage.getItem('lifeplanner_notified_tasks');
+    if (stored) notifiedTasks = JSON.parse(stored);
+  } catch(e) {}
+
+  // Dismiss button handler
+  if (DOM.closeReminderBtn) {
+    DOM.closeReminderBtn.addEventListener('click', () => {
+      if (DOM.reminderModal) DOM.reminderModal.classList.remove('show');
+    });
+  }
+
+  // Start background checker loop (every 10 seconds)
+  setInterval(checkReminders, 10000);
+}
+
+function checkReminders() {
+  if (!state.todos || state.todos.length === 0) return;
+
+  const now = new Date();
+  
+  // Format current date as YYYY-MM-DD
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const currentDateStr = `${year}-${month}-${day}`;
+  
+  // Format current time as HH:MM
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const currentTimeStr = `${hours}:${minutes}`;
+
+  state.todos.forEach(todo => {
+    // Check if task is not completed, has a date/time matching now, and is not already notified
+    if (!todo.completed && todo.dueDate === currentDateStr && todo.dueTime === currentTimeStr) {
+      if (!notifiedTasks.includes(todo.id)) {
+        triggerNotification(todo);
+      }
+    }
+  });
+}
+
+function triggerNotification(todo) {
+  // 1. Add to notified list
+  notifiedTasks.push(todo.id);
+  try {
+    localStorage.setItem('lifeplanner_notified_tasks', JSON.stringify(notifiedTasks));
+  } catch(e) {}
+
+  // 2. Play soft chime sound
+  playChime();
+
+  // 3. Trigger Browser Desktop Notification (if allowed)
+  if ("Notification" in window && Notification.permission === "granted") {
+    try {
+      new Notification("⏰ Task Reminder", {
+        body: `${todo.title}${todo.description ? ' - ' + todo.description : ''}`,
+        icon: '/favicon.ico'
+      });
+    } catch(e) {}
+  }
+
+  // 4. Trigger In-App Modal Dialog Popup
+  if (DOM.reminderModal && DOM.reminderTaskTitle && DOM.reminderTaskDesc) {
+    DOM.reminderTaskTitle.textContent = todo.title;
+    DOM.reminderTaskDesc.textContent = todo.description || 'No additional details written for this task.';
+    DOM.reminderModal.classList.add('show');
+  }
+}
+
+function playChime() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    
+    // First Chime note (A5)
+    const osc1 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(880, ctx.currentTime); 
+    gain1.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+    osc1.connect(gain1);
+    gain1.connect(ctx.destination);
+    osc1.start();
+    osc1.stop(ctx.currentTime + 1.2);
+
+    // Second Chime note (E6) delayed slightly
+    setTimeout(() => {
+      try {
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(1318.51, ctx.currentTime); 
+        gain2.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.0);
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.start();
+        osc2.stop(ctx.currentTime + 1.0);
+      } catch(e){}
+    }, 120);
+  } catch(e) {}
 }
 
 // Initialise App

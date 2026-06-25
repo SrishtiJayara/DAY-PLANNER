@@ -244,7 +244,7 @@
         </div>
 
         <!-- Notion-style Task Table Grid -->
-        <div class="task-table-wrapper">
+        <div class="task-table-wrapper" id="overview-content-wrapper">
           <table class="task-table">
             <thead>
               <tr>
@@ -262,26 +262,9 @@
           </table>
         </div>
 
-        <!-- Add Task inline bar -->
-        <div class="table-add-row">
-          <input type="text" id="inline-add-input" placeholder="+ New to-do entry..." autocomplete="off">
-          <div class="inline-selectors">
-            <select id="inline-category-select">
-              <option value="inbox">Inbox</option>
-              <option value="work">Work</option>
-              <option value="personal">Personal</option>
-              <option value="shopping">Shopping</option>
-              <option value="health">Health</option>
-            </select>
-            <select id="inline-priority-select">
-              <option value="low">Low</option>
-              <option value="medium" selected>Medium</option>
-              <option value="high">High</option>
-            </select>
-            <input type="date" id="inline-date-picker">
-            <input type="time" id="inline-time-picker" title="Reminder Time" style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 10px; border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 0.8rem; font-weight: 600; outline: none; transition: all 0.25s ease-out;">
-          </div>
-          <button id="inline-add-btn" class="btn-minimal-text" title="Add Task">Add</button>
+        <!-- Add Task inline bar (Dynamically rendered based on active filter) -->
+        <div class="table-add-row" id="overview-add-wrapper">
+          <!-- Rendered in app.js -->
         </div>
       </div>
 
@@ -714,6 +697,20 @@
       
       <div class="modal-footer" style="justify-content: center; margin-top: 16px; padding: 0;">
         <button id="signin-btn" class="btn-minimal-text" style="width: 100%; height: 38px;">Sign In</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Reminder Modal -->
+  <div id="reminder-modal" class="modal-overlay">
+    <div class="modal-card glass-panel text-center" style="max-width: 380px; padding: 30px 24px; border: 1px solid var(--accent-warm); box-shadow: 0 0 35px rgba(56, 189, 248, 0.15);">
+      <div style="font-size: 3rem; margin-bottom: 16px; animation: bounce 1s infinite alternate;">⏰</div>
+      <h3 style="font-family: var(--font-serif); font-size: 1.45rem; margin-bottom: 8px;">Task Reminder</h3>
+      <div id="reminder-task-title" style="font-weight: 700; font-size: 1.15rem; color: var(--accent-warm); margin-bottom: 8px;">Task Title</div>
+      <p id="reminder-task-desc" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px; max-height: 100px; overflow-y: auto; line-height: 1.5; padding: 0 10px;">Task description details go here...</p>
+      
+      <div class="modal-footer" style="padding: 0; margin-top: 16px;">
+        <button id="close-reminder-btn" class="btn btn-secondary" style="width: 100%; border: 1px solid var(--accent-warm); background: rgba(56, 189, 248, 0.1); color: var(--accent-warm); font-weight: 700;">Dismiss Reminder</button>
       </div>
     </div>
   </div>

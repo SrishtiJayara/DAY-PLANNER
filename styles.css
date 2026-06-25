@@ -5,6 +5,7 @@
 
 /* 1. Colors & Layout Tokens */
 :root {
+  color-scheme: dark;
   /* Fonts */
   --font-display: 'Outfit', sans-serif;
   --font-serif: 'Playfair Display', Georgia, serif;
@@ -47,6 +48,7 @@
 
 /* Light Theme Overrides (Warm Amber Sand) */
 [data-theme="light"] {
+  color-scheme: light;
   --bg-dark: #fcfbfa;
   --bg-card: #f5f3ef;
   --bg-card-hover: #ebe9e3;
@@ -516,20 +518,33 @@ body {
   padding-top: 8px;
 }
 
-#inline-add-input {
+.table-add-row input[type="text"],
+.table-add-row input[type="number"],
+#inline-add-input,
+#inline-desc-input,
+#inline-med-dosage,
+#inline-fin-amount {
   flex-grow: 1;
-  background: var(--bg-input);
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
+  background: var(--bg-input) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-main) !important;
   padding: 10px 14px;
   border-radius: var(--radius-sm);
   font-family: var(--font-body);
   font-size: 0.85rem;
+  transition: all var(--transition-fast);
 }
 
-#inline-add-input:focus {
+.table-add-row input[type="text"]:focus,
+.table-add-row input[type="number"]:focus,
+#inline-add-input:focus,
+#inline-desc-input:focus,
+#inline-med-dosage:focus,
+#inline-fin-amount:focus {
   outline: none;
-  border-color: var(--accent-warm);
+  background: var(--bg-input) !important;
+  border-color: var(--accent-warm) !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25) !important;
 }
 
 .inline-selectors {
@@ -540,9 +555,9 @@ body {
 
 .inline-selectors select,
 .inline-selectors input {
-  background: var(--bg-input);
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
+  background: var(--bg-input) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-main) !important;
   padding: 8px 10px;
   border-radius: var(--radius-sm);
   font-family: var(--font-body);
@@ -553,7 +568,9 @@ body {
 .inline-selectors select:focus,
 .inline-selectors input:focus {
   outline: none;
-  border-color: var(--accent-warm);
+  background: var(--bg-input) !important;
+  border-color: var(--accent-warm) !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25) !important;
 }
 
 /* ==========================================================================
@@ -2023,8 +2040,23 @@ input[type="date"]:focus,
 select:focus,
 textarea:focus {
   border-color: var(--accent-warm) !important;
-  box-shadow: 0 0 10px rgba(217, 119, 54, 0.15) !important;
-  background: rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25) !important;
+}
+
+/* Custom Styled Select Dropdown (Disabling browser native white boxes) */
+select {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px center !important;
+  background-size: 14px !important;
+  padding-right: 32px !important;
+}
+
+[data-theme="light"] select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23b45309' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
 }
 
 /* Minimalist calendar today button */
@@ -2596,6 +2628,568 @@ textarea:focus {
 .counter-pop-animation {
   display: inline-block;
   animation: counter-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ==========================================================================
+   11. Select Option Contrast & Legibility Overrides
+   ========================================================================== */
+select option {
+  background-color: #030d2e !important;
+  color: #e4e4e7 !important;
+}
+
+[data-theme="light"] select option {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+}
+
+/* Details Panel Inputs & Controls styling */
+#details-panel input[type="text"],
+#details-panel input[type="number"],
+#details-panel input[type="date"],
+#details-panel input[type="time"],
+#details-panel select,
+#details-panel textarea {
+  background: var(--bg-input) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-main) !important;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+#details-panel input[type="text"]:focus,
+#details-panel input[type="number"]:focus,
+#details-panel input[type="date"]:focus,
+#details-panel input[type="time"]:focus,
+#details-panel select:focus,
+#details-panel textarea:focus {
+  background: var(--bg-input) !important;
+  border-color: var(--accent-warm) !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25) !important;
+}
+
+/* Focused input adjustments in light mode for readability */
+[data-theme="light"] input[type="text"]:focus,
+[data-theme="light"] input[type="number"]:focus,
+[data-theme="light"] input[type="date"]:focus,
+[data-theme="light"] input[type="time"]:focus,
+[data-theme="light"] select:focus,
+[data-theme="light"] textarea:focus {
+  background: #ffffff !important;
+  color: #111827 !important;
+}
+
+/* General high contrast input settings for light theme */
+[data-theme="light"] input[type="text"],
+[data-theme="light"] input[type="number"],
+[data-theme="light"] input[type="date"],
+[data-theme="light"] input[type="time"],
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+  color: #111827 !important;
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #4b5563 !important;
+  opacity: 1 !important;
+}
+
+/* Legible inactive tabs in light mode */
+[data-theme="light"] .overview-tabs .tab-btn {
+  color: #4b5563 !important;
+}
+
+[data-theme="light"] .overview-tabs .tab-btn:hover {
+  color: #111827 !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .overview-tabs .tab-btn.active {
+  background: rgba(180, 83, 9, 0.15) !important;
+  color: #b45309 !important;
+}
+
+/* ==========================================================================
+   12. Custom Tab Views UIs (Journal, Habits, Workouts, Meals, Meds, Finances)
+   ========================================================================== */
+
+/* Generic Layout Wrapper */
+.custom-layout-container {
+  padding: 16px 8px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* A. Journal Grid Layout */
+.journal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.journal-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all var(--transition-smooth);
+}
+
+.journal-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-warm);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.journal-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.journal-card-date {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent-warm);
+  text-transform: uppercase;
+}
+
+.journal-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.journal-card-title:hover {
+  color: var(--accent-warm);
+}
+
+.journal-card-body {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  flex-grow: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.journal-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 10px;
+}
+
+/* B. Habit Board Layout */
+.habit-streaks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.habit-streak-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  transition: all var(--transition-smooth);
+}
+
+.habit-streak-card:hover {
+  border-color: var(--accent-warm);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.habit-streak-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.habit-streak-name {
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.habit-streak-name:hover {
+  color: var(--accent-warm);
+}
+
+.habit-streak-stat {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.habit-streak-badge {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.habit-action-btn {
+  background: rgba(56, 189, 248, 0.1);
+  color: var(--accent-warm);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.habit-action-btn.completed {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--success);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.habit-action-btn:hover {
+  transform: scale(1.03);
+}
+
+/* C. Workout Log Layout */
+.workout-log-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.workout-log-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all var(--transition-smooth);
+}
+
+.workout-log-card:hover {
+  border-color: var(--accent-warm);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.workout-log-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.workout-log-icon {
+  font-size: 1.5rem;
+}
+
+.workout-log-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.workout-log-title:hover {
+  color: var(--accent-warm);
+}
+
+.workout-log-details {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  min-height: 40px;
+}
+
+.workout-log-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  border-top: 1px solid var(--border-color);
+  padding-top: 10px;
+}
+
+/* D. Meal Planner Layout */
+.meal-board-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.meal-board-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all var(--transition-smooth);
+}
+
+.meal-board-card:hover {
+  border-color: var(--accent-warm);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.meal-board-type {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent-warm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.meal-board-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.meal-board-title:hover {
+  color: var(--accent-warm);
+}
+
+.meal-board-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.meal-board-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  border-top: 1px solid var(--border-color);
+  padding-top: 8px;
+}
+
+/* E. Medications Layout */
+.medication-pillbox {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.medication-pill-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  transition: all var(--transition-smooth);
+}
+
+.medication-pill-card:hover {
+  border-color: var(--accent-warm);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.medication-pill-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.medication-pill-icon {
+  font-size: 1.5rem;
+}
+
+.medication-pill-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.medication-pill-name:hover {
+  color: var(--accent-warm);
+}
+
+.medication-pill-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.medication-pill-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+}
+
+.medication-pill-badge.dosage {
+  background: rgba(139, 92, 246, 0.12);
+  color: #8b5cf6;
+}
+
+.medication-pill-badge.schedule {
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--accent-warm);
+}
+
+.medication-pill-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  border-top: 1px solid var(--border-color);
+  padding-top: 8px;
+}
+
+/* F. Finances Ledger Layout */
+.finances-ledger {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.finances-summary-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.finances-summary-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  text-align: center;
+}
+
+.finances-summary-lbl {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.finances-summary-val {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-top: 4px;
+}
+
+.finances-summary-val.pos { color: var(--success); }
+.finances-summary-val.neg { color: var(--danger); }
+
+.finances-ledger-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.1);
+  padding: 4px;
+}
+
+.finance-ledger-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: var(--radius-sm);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.82rem;
+}
+
+.finance-ledger-item:last-child {
+  border-bottom: none;
+}
+
+.finance-ledger-desc {
+  font-weight: 600;
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.finance-ledger-desc:hover {
+  color: var(--accent-warm);
+}
+
+.finance-ledger-cat {
+  margin-right: 16px;
+}
+
+.finance-ledger-date {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-right: 16px;
+}
+
+.finance-ledger-amt {
+  font-weight: 700;
+  margin-right: 16px;
+}
+
+.finance-ledger-amt.pos { color: var(--success); }
+.finance-ledger-amt.neg { color: var(--danger); }
+
+/* Common styles for light theme adjustments of custom cards */
+[data-theme="light"] .journal-card,
+[data-theme="light"] .habit-streak-card,
+[data-theme="light"] .workout-log-card,
+[data-theme="light"] .meal-board-card,
+[data-theme="light"] .medication-pill-card,
+[data-theme="light"] .finances-summary-card,
+[data-theme="light"] .finance-ledger-item {
+  background: rgba(0, 0, 0, 0.02) !important;
+}
+
+[data-theme="light"] .journal-card:hover,
+[data-theme="light"] .habit-streak-card:hover,
+[data-theme="light"] .workout-log-card:hover,
+[data-theme="light"] .meal-board-card:hover,
+[data-theme="light"] .medication-pill-card:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .workout-log-details {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .finances-ledger-list {
+  background: rgba(0, 0, 0, 0.02) !important;
 }
 
 
