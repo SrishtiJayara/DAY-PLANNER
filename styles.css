@@ -11,27 +11,27 @@
   --font-serif: 'Playfair Display', Georgia, serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
 
-  /* Theme: Deep Midnight Navy & Oxford Blue (Coolors Palette) */
+  /* Theme: Color Hunt Palette (#000000, #233d4d, #fe7f2d, #eaecf0) */
   --bg-dark: #000000;           /* Pure Black */
-  --bg-card: #030d2e;           /* Penn Blue / Navy */
-  --bg-card-hover: #071d3d;     /* Oxford Blue */
-  --bg-input: #062a4d;          /* Prussian Blue */
+  --bg-card: #13222c;           /* Dark slate blue tint */
+  --bg-card-hover: #233d4d;     /* Pure Dark Slate Blue */
+  --bg-input: #0f1a21;          /* Deeper slate blue */
   
-  --border-color: rgba(6, 42, 77, 0.4);
-  --border-color-hover: rgba(7, 29, 61, 0.8);
+  --border-color: rgba(35, 61, 77, 0.4);
+  --border-color-hover: rgba(35, 61, 77, 0.8);
   
-  --text-main: #e4e4e7;
-  --text-muted: #8e8e93;
-  --text-dim: #5c5c61;
+  --text-main: #eaecf0;         /* Cool off-white */
+  --text-muted: #8a9ba7;
+  --text-dim: #566976;
   --text-inverse: #000000;
   
-  /* Electric Blue Accents */
-  --accent-warm: #38bdf8;       /* Bright Sky Blue */
-  --accent-warm-rgb: 56, 189, 248;
-  --accent-light: #bae6fd;
+  /* Vibrant Orange Accent */
+  --accent-warm: #fe7f2d;       /* Vibrant Orange */
+  --accent-warm-rgb: 254, 127, 45;
+  --accent-light: rgba(254, 127, 45, 0.2);
   
   --success: #10b981;           /* Soft Emerald */
-  --warning: #f59e0b;           /* Amber */
+  --warning: #fe7f2d;           /* Vibrant Orange */
   --danger: #ef4444;            /* Rose */
   
   /* Styling Details */
@@ -46,27 +46,28 @@
   --shadow-lg: 0 15px 35px rgba(0,0,0,0.5);
 }
 
-/* Light Theme Overrides (Warm Amber Sand) */
+/* Light Theme Overrides (Color Hunt Palette) */
 [data-theme="light"] {
   color-scheme: light;
-  --bg-dark: #fcfbfa;
-  --bg-card: #f5f3ef;
-  --bg-card-hover: #ebe9e3;
-  --bg-input: #e4e2da;
+  --bg-dark: #eaecf0;           /* Soothing Cool Off-White background */
+  --bg-card: #ffffff;           /* Clean white cards */
+  --bg-card-hover: #f4f5f8;     /* Light cool grey hover */
+  --bg-input: #ffffff;          /* White input background */
   
-  --border-color: rgba(0, 0, 0, 0.06);
-  --border-color-hover: rgba(0, 0, 0, 0.15);
+  --border-color: rgba(35, 61, 77, 0.1);
+  --border-color-hover: rgba(35, 61, 77, 0.25);
   
-  --text-main: #242426;
-  --text-muted: #797772;
-  --text-dim: #a4a199;
-  --text-inverse: #fcfbfa;
+  --text-main: #233d4d;         /* Highly legible dark slate blue text */
+  --text-muted: #506c7e;
+  --text-dim: #7c95a5;
+  --text-inverse: #ffffff;
   
-  --accent-warm: #b45309;       /* Deep Amber */
-  --accent-light: #fef3c7;
+  --accent-warm: #fe7f2d;       /* Vibrant Orange Accent */
+  --accent-warm-rgb: 254, 127, 45;
+  --accent-light: rgba(254, 127, 45, 0.15);
   
-  --shadow-sm: 0 4px 8px rgba(100, 90, 80, 0.05);
-  --shadow-lg: 0 12px 30px rgba(100, 90, 80, 0.1);
+  --shadow-sm: 0 4px 8px rgba(35, 61, 77, 0.05);
+  --shadow-lg: 0 12px 30px rgba(35, 61, 77, 0.1);
 }
 
 /* 2. Global Reset & Ambient Background */
@@ -371,7 +372,7 @@ body {
 }
 
 .overview-tabs .tab-btn.active {
-  background: rgba(56, 189, 248, 0.12);
+  background: rgba(var(--accent-warm-rgb), 0.12);
   color: var(--accent-warm);
 }
 
@@ -544,7 +545,7 @@ body {
   outline: none;
   background: var(--bg-input) !important;
   border-color: var(--accent-warm) !important;
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25) !important;
+  box-shadow: 0 0 10px rgba(var(--accent-warm-rgb), 0.25) !important;
 }
 
 .inline-selectors {
@@ -570,21 +571,16 @@ body {
   outline: none;
   background: var(--bg-input) !important;
   border-color: var(--accent-warm) !important;
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25) !important;
+  box-shadow: 0 0 10px rgba(var(--accent-warm-rgb), 0.25) !important;
 }
 
 /* ==========================================================================
    6b. Spotify Iframe Integration Widget
    ========================================================================== */
 .spotify-widget {
-  background: #030d2e;
-  border-color: rgba(6, 42, 77, 0.5);
+  background: var(--bg-card);
+  border-color: var(--border-color);
   min-height: auto;
-}
-
-[data-theme="light"] .spotify-widget {
-  background: #f5f3ef;
-  border-color: rgba(0, 0, 0, 0.06);
 }
 
 .spotify-iframe-container {
@@ -798,12 +794,12 @@ body {
   align-items: center;
   justify-content: center;
   transition: all var(--transition-bounce);
-  box-shadow: 0 4px 10px rgba(56, 189, 248, 0.3);
+  box-shadow: 0 4px 10px rgba(var(--accent-warm-rgb), 0.3);
 }
 
 .play-pause-btn:hover:not(:disabled) {
   transform: scale(1.08);
-  box-shadow: 0 6px 14px rgba(56, 189, 248, 0.4);
+  box-shadow: 0 6px 14px rgba(var(--accent-warm-rgb), 0.4);
 }
 
 .play-pause-btn:active:not(:disabled) {
@@ -937,7 +933,7 @@ body {
 }
 
 .suggestion-tag:hover {
-  background: rgba(56, 189, 248, 0.08);
+  background: rgba(var(--accent-warm-rgb), 0.08);
   border-color: var(--accent-warm);
   color: var(--text-main);
   transform: translateY(-1px);
@@ -985,7 +981,7 @@ body {
 }
 
 .search-result-item.active {
-  background: rgba(56, 189, 248, 0.08);
+  background: rgba(var(--accent-warm-rgb), 0.08);
   border-left: 3px solid var(--accent-warm);
 }
 
@@ -1070,10 +1066,10 @@ body {
 }
 
 .preset-badge.active {
-  background: rgba(56, 189, 248, 0.12);
+  background: rgba(var(--accent-warm-rgb), 0.12);
   color: var(--accent-warm);
   border-color: var(--accent-warm);
-  box-shadow: 0 0 8px rgba(56, 189, 248, 0.2);
+  box-shadow: 0 0 8px rgba(var(--accent-warm-rgb), 0.2);
 }
 
 [data-theme="light"] .preset-badge {
@@ -1173,7 +1169,7 @@ body {
 }
 
 .fav-item.active {
-  background: rgba(56, 189, 248, 0.12) !important;
+  background: rgba(var(--accent-warm-rgb), 0.12) !important;
   border-color: var(--accent-warm) !important;
 }
 
@@ -1314,7 +1310,7 @@ body {
 }
 
 .calendar-day-cell.today-cell {
-  background: rgba(56, 189, 248, 0.04);
+  background: rgba(var(--accent-warm-rgb), 0.04);
 }
 
 .calendar-day-number {
@@ -2040,7 +2036,7 @@ input[type="date"]:focus,
 select:focus,
 textarea:focus {
   border-color: var(--accent-warm) !important;
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25) !important;
+  box-shadow: 0 0 10px rgba(var(--accent-warm-rgb), 0.25) !important;
 }
 
 /* Custom Styled Select Dropdown (Disabling browser native white boxes) */
@@ -2048,7 +2044,7 @@ select {
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23fe7f2d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
   background-repeat: no-repeat !important;
   background-position: right 12px center !important;
   background-size: 14px !important;
@@ -2056,7 +2052,7 @@ select {
 }
 
 [data-theme="light"] select {
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23b45309' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23fe7f2d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
 }
 
 /* Minimalist calendar today button */
@@ -2162,7 +2158,7 @@ select {
 
 .card-link-add-btn:hover {
   color: var(--accent-warm);
-  background: rgba(56, 189, 248, 0.08);
+  background: rgba(var(--accent-warm-rgb), 0.08);
 }
 
 /* Title Quick-Add Shortcut Button */
@@ -2188,7 +2184,7 @@ select {
 
 .title-add-btn:hover {
   color: var(--accent-warm);
-  background: rgba(56, 189, 248, 0.08);
+  background: rgba(var(--accent-warm-rgb), 0.08);
   transform: scale(1.1);
 }
 
@@ -2222,7 +2218,7 @@ select {
 
 .cal-day-add-btn:hover {
   color: var(--accent-warm);
-  background: rgba(56, 189, 248, 0.1);
+  background: rgba(var(--accent-warm-rgb), 0.1);
   transform: scale(1.15);
 }
 
@@ -2254,7 +2250,7 @@ select {
 
 .upcoming-add-btn:hover {
   color: var(--accent-warm);
-  background: rgba(56, 189, 248, 0.08);
+  background: rgba(var(--accent-warm-rgb), 0.08);
   transform: scale(1.15);
 }
 
@@ -2287,7 +2283,7 @@ select {
 .result-add-btn:hover {
   color: var(--accent-warm);
   border-color: var(--accent-warm);
-  background: rgba(56, 189, 248, 0.1);
+  background: rgba(var(--accent-warm-rgb), 0.1);
   transform: scale(1.15);
 }
 
@@ -2450,12 +2446,12 @@ select {
 .modal-signin {
   max-width: 380px !important;
   border: 1px solid var(--accent-warm) !important;
-  box-shadow: 0 0 30px rgba(56, 189, 248, 0.15) !important;
+  box-shadow: 0 0 30px rgba(var(--accent-warm-rgb), 0.15) !important;
 }
 
 [data-theme="light"] .modal-signin {
   border-color: var(--accent-warm) !important;
-  box-shadow: 0 10px 30px rgba(180, 83, 9, 0.1) !important;
+  box-shadow: 0 10px 30px rgba(var(--accent-warm-rgb), 0.1) !important;
 }
 
 /* Google Sign-In Button Styles */
@@ -2634,13 +2630,13 @@ select {
    11. Select Option Contrast & Legibility Overrides
    ========================================================================== */
 select option {
-  background-color: #030d2e !important;
-  color: #e4e4e7 !important;
+  background-color: var(--bg-card-hover) !important;
+  color: var(--text-main) !important;
 }
 
 [data-theme="light"] select option {
-  background-color: #ffffff !important;
-  color: #111827 !important;
+  background-color: var(--bg-card) !important;
+  color: var(--text-main) !important;
 }
 
 /* Details Panel Inputs & Controls styling */
@@ -2667,7 +2663,7 @@ select option {
 #details-panel textarea:focus {
   background: var(--bg-input) !important;
   border-color: var(--accent-warm) !important;
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25) !important;
+  box-shadow: 0 0 10px rgba(var(--accent-warm-rgb), 0.25) !important;
 }
 
 /* Focused input adjustments in light mode for readability */
@@ -2708,8 +2704,8 @@ select option {
 }
 
 [data-theme="light"] .overview-tabs .tab-btn.active {
-  background: rgba(180, 83, 9, 0.15) !important;
-  color: #b45309 !important;
+  background: var(--accent-light) !important;
+  color: var(--accent-warm) !important;
 }
 
 /* ==========================================================================
@@ -2856,9 +2852,9 @@ select option {
 }
 
 .habit-action-btn {
-  background: rgba(56, 189, 248, 0.1);
+  background: rgba(var(--accent-warm-rgb), 0.1);
   color: var(--accent-warm);
-  border: 1px solid rgba(56, 189, 248, 0.2);
+  border: 1px solid rgba(var(--accent-warm-rgb), 0.2);
   padding: 8px 16px;
   border-radius: var(--radius-sm);
   font-size: 0.78rem;
@@ -3062,7 +3058,7 @@ select option {
 }
 
 .medication-pill-badge.schedule {
-  background: rgba(56, 189, 248, 0.12);
+  background: rgba(var(--accent-warm-rgb), 0.12);
   color: var(--accent-warm);
 }
 
