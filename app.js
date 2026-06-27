@@ -145,6 +145,7 @@ const DOM = {
   mealSnackInput: document.getElementById('meal-snack-input'),
   mealBreakfastInput: document.getElementById('meal-breakfast-input'),
   mealLunchInput: document.getElementById('meal-lunch-input'),
+  saveMealsBtn: document.getElementById('save-meals-btn'),
 
   // Shopping List
   shoppingChecklist: document.getElementById('shopping-checklist'),
@@ -2521,6 +2522,17 @@ function setupEventListeners() {
     state.mealPlanner.lunch = e.target.value;
     saveData();
   });
+
+  // Explicit Save Meal Plan Button
+  if (DOM.saveMealsBtn) {
+    DOM.saveMealsBtn.addEventListener('click', () => {
+      state.mealPlanner.snack = DOM.mealSnackInput.value.trim();
+      state.mealPlanner.breakfast = DOM.mealBreakfastInput.value.trim();
+      state.mealPlanner.lunch = DOM.mealLunchInput.value.trim();
+      saveData();
+      showToast("Meal plan saved successfully! 🥗");
+    });
+  }
 
   // Shopping list trigger additions
   DOM.addShoppingBtn.addEventListener('click', addShoppingItem);
