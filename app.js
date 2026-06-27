@@ -38,7 +38,7 @@ let state = {
   habits: [],
   shoppingItems: [],
   finances: [],
-  mealPlanner: { snack: '', breakfast: '', lunch: '' },
+  mealPlanner: { breakfast: '', lunch: '', dinner: '' },
   activeFilter: 'all', // 'all', 'journal', 'habits', 'workout', 'meal', 'medications', 'income'
   searchQuery: '',
   sortBy: 'createdAt',
@@ -142,9 +142,9 @@ const DOM = {
   addHabitBtn: document.getElementById('add-habit-btn'),
 
   // Meals
-  mealSnackInput: document.getElementById('meal-snack-input'),
   mealBreakfastInput: document.getElementById('meal-breakfast-input'),
   mealLunchInput: document.getElementById('meal-lunch-input'),
+  mealDinnerInput: document.getElementById('meal-dinner-input'),
   saveMealsBtn: document.getElementById('save-meals-btn'),
 
   // Shopping List
@@ -379,7 +379,7 @@ function loadData() {
   state.habits = storedHabits ? JSON.parse(storedHabits) : [...DEFAULT_HABITS];
   state.shoppingItems = storedShopping ? JSON.parse(storedShopping) : [...DEFAULT_SHOPPING];
   state.finances = storedFinances ? JSON.parse(storedFinances) : [...DEFAULT_FINANCES];
-  state.mealPlanner = storedMeals ? JSON.parse(storedMeals) : { snack: '', breakfast: '', lunch: '' };
+  state.mealPlanner = storedMeals ? JSON.parse(storedMeals) : { breakfast: '', lunch: '', dinner: '' };
   
   state.theme = storedTheme || 'dark';
   document.documentElement.setAttribute('data-theme', state.theme);
@@ -1306,9 +1306,9 @@ function renderHabitsTracker() {
 
 // 4e. Render Meal Planner Inputs
 function renderMealInputs() {
-  DOM.mealSnackInput.value = state.mealPlanner.snack || '';
-  DOM.mealBreakfastInput.value = state.mealPlanner.breakfast || '';
-  DOM.mealLunchInput.value = state.mealPlanner.lunch || '';
+  if (DOM.mealBreakfastInput) DOM.mealBreakfastInput.value = state.mealPlanner.breakfast || '';
+  if (DOM.mealLunchInput) DOM.mealLunchInput.value = state.mealPlanner.lunch || '';
+  if (DOM.mealDinnerInput) DOM.mealDinnerInput.value = state.mealPlanner.dinner || '';
 }
 
 // 4f. Render Shopping Checklist List
@@ -2510,25 +2510,31 @@ function setupEventListeners() {
   });
 
   // Meals sync blur inputs
-  DOM.mealSnackInput.addEventListener('change', (e) => {
-    state.mealPlanner.snack = e.target.value;
-    saveData();
-  });
-  DOM.mealBreakfastInput.addEventListener('change', (e) => {
-    state.mealPlanner.breakfast = e.target.value;
-    saveData();
-  });
-  DOM.mealLunchInput.addEventListener('change', (e) => {
-    state.mealPlanner.lunch = e.target.value;
-    saveData();
-  });
+  if (DOM.mealBreakfastInput) {
+    DOM.mealBreakfastInput.addEventListener('change', (e) => {
+      state.mealPlanner.breakfast = e.target.value;
+      saveData();
+    });
+  }
+  if (DOM.mealLunchInput) {
+    DOM.mealLunchInput.addEventListener('change', (e) => {
+      state.mealPlanner.lunch = e.target.value;
+      saveData();
+    });
+  }
+  if (DOM.mealDinnerInput) {
+    DOM.mealDinnerInput.addEventListener('change', (e) => {
+      state.mealPlanner.dinner = e.target.value;
+      saveData();
+    });
+  }
 
   // Explicit Save Meal Plan Button
   if (DOM.saveMealsBtn) {
     DOM.saveMealsBtn.addEventListener('click', () => {
-      state.mealPlanner.snack = DOM.mealSnackInput.value.trim();
-      state.mealPlanner.breakfast = DOM.mealBreakfastInput.value.trim();
-      state.mealPlanner.lunch = DOM.mealLunchInput.value.trim();
+      state.mealPlanner.breakfast = DOM.mealBreakfastInput ? DOM.mealBreakfastInput.value.trim() : '';
+      state.mealPlanner.lunch = DOM.mealLunchInput ? DOM.mealLunchInput.value.trim() : '';
+      state.mealPlanner.dinner = DOM.mealDinnerInput ? DOM.mealDinnerInput.value.trim() : '';
       saveData();
       showToast("Meal plan saved successfully! 🥗");
     });
@@ -2607,7 +2613,7 @@ function setupEventListeners() {
       state.habits = [];
       state.shoppingItems = [];
       state.finances = [];
-      state.mealPlanner = { snack: '', breakfast: '', lunch: '' };
+      state.mealPlanner = { breakfast: '', lunch: '', dinner: '' };
       closeDetailsPanel();
       renderApp();
       showToast("Planner boards cleared.");
@@ -2669,7 +2675,7 @@ function setupEventListeners() {
         showToast(`Add habit entry...`);
       } else if (target === 'meals') {
         document.querySelector('.meals-panel').scrollIntoView({ behavior: 'smooth' });
-        DOM.mealSnackInput.focus();
+        if (DOM.mealBreakfastInput) DOM.mealBreakfastInput.focus();
         showToast(`Add meal entry...`);
       } else if (target === 'finance') {
         const panel = document.querySelector('.finance-panel');
